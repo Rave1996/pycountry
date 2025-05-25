@@ -73,6 +73,7 @@ def test_germany_has_all_attributes(countries):
     germany = pycountry.countries.get(alpha_2="DE")
     assert germany.alpha_2 == "DE"
     assert germany.alpha_3 == "DEU"
+    assert germany.area_code == "+49"
     assert germany.numeric == "276"
     assert germany.name == "Germany"
     assert germany.official_name == "Federal Republic of Germany"
@@ -195,12 +196,13 @@ def test_removed_countries():
 
 def test_repr(countries):
     assert re.match(
-        "Country\\(alpha_2=u?'DE', "
-        "alpha_3=u?'DEU', "
-        "flag='..', "
-        "name=u?'Germany', "
-        "numeric=u?'276', "
-        "official_name=u?'Federal Republic of Germany'\\)",
+        r"Country\(alpha_2='DE', "
+        r"alpha_3='DEU', "
+        r"area_code='\+49', "
+        r"flag='..', "
+        r"name='Germany', "
+        r"numeric='276', "
+        r"official_name='Federal Republic of Germany'\)",
         repr(pycountry.countries.get(alpha_2="DE")),
     )
 
@@ -210,6 +212,7 @@ def test_dict(countries):
     exp = {
         "alpha_2": "DE",
         "alpha_3": "DEU",
+        "area_code": "+49",
         "name": "Germany",
         "numeric": "276",
         "official_name": "Federal Republic of Germany",
