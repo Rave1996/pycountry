@@ -7,7 +7,7 @@ logger = logging.getLogger("pycountry.db")
 
 
 class Data:
-    def __init__(self, **fields: str):
+    def __init__(self, **fields: any):
         self._fields = fields
 
     def __getattr__(self, key):
@@ -15,7 +15,7 @@ class Data:
             return self._fields[key]
         raise AttributeError(key)
 
-    def __setattr__(self, key: str, value: str) -> None:
+    def __setattr__(self, key: str, value: any) -> None:
         if key != "_fields":
             self._fields[key] = value
         super().__setattr__(key, value)
@@ -90,17 +90,18 @@ class Database:
             for key, value in entry.items():
                 if key in self.no_index:
                     continue
-                # Lookups and searches are case insensitive. Normalize
-                # here.
                 index = self.indices.setdefault(key, {})
-                value = value.lower()
-                if value in index:
+                if isinstance(value, str):
+                    index_value = value.lower()
+                else:
+                    continue
+                if index_value in index:
                     logger.debug(
                         "%s %r already taken in index %r and will be "
                         "ignored. This is an error in the databases."
-                        % (self.factory.__name__, value, key)
+                        % (self.factory.__name__, index_value, key)
                     )
-                index[value] = obj
+                index[index_value] = obj
 
         self._is_loaded = True
 
